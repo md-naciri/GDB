@@ -11,6 +11,9 @@ public class Main {
         // IntelliJ IDEA suggests fixing it.
         System.out.printf("Hello and welcome!\n");
         //addBook();
+        //Book.displayBooks();
+        //Book.displayAvailableBooks();
+        //searchBooks();
 
 
         //Copies.displayCopies();
@@ -39,5 +42,13 @@ public class Main {
         // Create a Book object with the provided details
         Book book = new Book(isbn, title, author, quantity);
         book.addBook(book);
+    }
+
+    public static void searchBooks () {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Search for the book by the title or the author: ");
+        String search = scanner.nextLine();
+        Book book = new Book();
+        book.searchBooks(search);
     }
 }

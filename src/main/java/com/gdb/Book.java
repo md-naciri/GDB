@@ -18,6 +18,9 @@ public class Book {
         this.quantity = quantity;
     }
 
+    public Book() {
+    }
+
     public void addBook(Book book) {
         String bookQuery = "INSERT INTO `book`(`isbn`, `title`, `author`, `quantity`) VALUES (?,?,?,?)";
         String copiesQuery = "INSERT INTO `copies`(`status`, `isbn_book`) VALUES (?,?)";
@@ -58,7 +61,21 @@ public class Book {
 
     }
 
-    public static void searchBooks() {
+    public void searchBooks(String search) {
+        String query = "SELECT * FROM `book` WHERE title = ? OR author = ? ;";
+        PreparedStatement p;
+        ResultSet r;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            p.setString(1,search);
+            p.setString(2,search);
+            r = p.executeQuery();
+            while (r.next()){
+                System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -67,7 +84,50 @@ public class Book {
     }
 
     public static void displayBooks() {
+        String query = "SELECT\n" +
+                "    b.isbn,\n" +
+                "    b.title,\n" +
+                "    b.author,\n" +
+                "    b.quantity,\n" +
+                "    SUM(CASE WHEN c.status = 'Available' THEN 1 ELSE 0 END) AS available,\n" +
+                "    SUM(CASE WHEN c.status = 'Borrowed' THEN 1 ELSE 0 END) AS borrowed,\n" +
+                "    SUM(CASE WHEN c.status = 'Lost' THEN 1 ELSE 0 END) AS lost\n" +
+                "FROM book b JOIN copies c ON b.isbn = c.isbn_book\n" +
+                "GROUP BY b.isbn;";
+        PreparedStatement p;
+        ResultSet r;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            r = p.executeQuery();
+            while (r.next()){
+                System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4)+"    Av Qu: "+r.getInt(5)+"    Br Qu: "+r.getInt(6)+"    Ls Qu: "+r.getInt(7));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    public static void displayAvailableBooks() {
+        String query = "SELECT\n" +
+                "    b.isbn,\n" +
+                "    b.title,\n" +
+                "    b.author,\n" +
+                "    b.quantity,\n" +
+                "    SUM(CASE WHEN c.status = 'Available' THEN 1 ELSE 0 END) AS available\n" +
+                "FROM book b JOIN copies c ON b.isbn = c.isbn_book\n" +
+                "GROUP BY b.isbn\n" +
+                "HAVING available > 0;";
+        PreparedStatement p;
+        ResultSet r;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            r = p.executeQuery();
+            while (r.next()){
+                System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4)+"    Av Qu: "+r.getInt(5));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
