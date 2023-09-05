@@ -2,25 +2,23 @@ package com.gdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.SynchronousQueue;
 
-public class Copies extends Book {
-    private static int bookId;
+public class Copy extends Book {
+    private static int copyId;
     private String status;
 
     private Book book;
 
-    public Copies(String isbn, String title, String author, int quantity, int bookId, String status, Book book){
+    public Copy(String isbn, String title, String author, int quantity, int copyId, String status, Book book){
         super(isbn, title, author, quantity);
         this.status = status;
         this.book = book;
-        bookId++;
+        copyId++;
     }
 
-    public int getBookId() {
-        return bookId;
+    public int getcopyId() {
+        return copyId;
     }
 
     public String getStatus() {
@@ -47,7 +45,7 @@ public class Copies extends Book {
             p.setString(1,i_isbn);
             r = p.executeQuery();
             while (r.next()){
-               System.out.println("-Title: "+r.getString("title")+"     -Author: "+r.getString("author")+"     -ISBN: "+r.getString("isbn_book")+"     -Copy_ID: "+r.getString("bookId")+"     - Status: "+r.getString("status"));
+               System.out.println("-Title: "+r.getString("title")+"     -Author: "+r.getString("author")+"     -ISBN: "+r.getString("isbn_book")+"     -Copy_ID: "+r.getString("copyId")+"     - Status: "+r.getString("status"));
             }
         }catch (Exception e){
             e.getMessage();

@@ -50,44 +50,6 @@ public class Book {
         }
     }
 
-
-
-    /*public static void addBook() {
-        PreparedStatement p;
-        //ResultSet r;
-        String query = "INSERT INTO `book`(`isbn`, `title`, `author`, `quantity`) VALUES (?,?,?,?)";
-        Scanner s = new Scanner(System.in);
-        System.out.println("insert isbn, title, author, quantity");
-        String i_isbn = s.nextLine();
-        String i_title = s.nextLine();
-        String i_author = s.nextLine();
-        int i_quantity = s.nextInt();
-
-        try {
-            p = DB_connection.Cnx().prepareStatement(query);
-            p.setString(1,i_isbn);
-            p.setString(2,i_title);
-            p.setString(3,i_author);
-            p.setInt(4, i_quantity);
-            if(p.executeUpdate()!=0){
-                PreparedStatement p2;
-                String query2 = "INSERT INTO `copies`(`status`, `isbn_book`) VALUES (?,?)";
-                for(int i=0; i<i_quantity;i++) {
-                    p2 = DB_connection.Cnx().prepareStatement(query2);
-                    p2.setString(1, "Available");
-                    p2.setString(2, i_isbn);
-                    p2.execute();
-                }
-
-                    System.out.println("Book inserted");
-            } else {
-                System.out.println("Book not inserted");
-            }
-        }catch (Exception e){
-            e.getMessage();
-        }
-    }*/
-
     public static void updateBook() {
 
     }

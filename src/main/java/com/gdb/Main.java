@@ -6,20 +6,11 @@ import java.util.Scanner;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
+
         // Press Alt+Enter with your caret at the highlighted text to see how
         // IntelliJ IDEA suggests fixing it.
         System.out.printf("Hello and welcome!\n");
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Insert ISBN, title, author, quantity: ");
-        String isbn = scanner.nextLine();
-        String title = scanner.nextLine();
-        String author = scanner.nextLine();
-        int quantity = scanner.nextInt();
-
-        // Create a Book object with the provided details
-        Book book = new Book(isbn, title, author, quantity);
-        book.addBook(book);
-
+        //addBook();
 
 
         //Copies.displayCopies();
@@ -36,5 +27,17 @@ public class Main {
             // for you, but you can always add more by pressing Ctrl+F8.
             System.out.println("i = " + i);
         }*/
+    }
+
+    public static void addBook() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Insert ISBN, title, author, quantity: ");
+        String isbn = scanner.nextLine();
+        String title = scanner.nextLine();
+        String author = scanner.nextLine();
+        int quantity = scanner.nextInt();
+        // Create a Book object with the provided details
+        Book book = new Book(isbn, title, author, quantity);
+        book.addBook(book);
     }
 }
