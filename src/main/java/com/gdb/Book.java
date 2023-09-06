@@ -1,5 +1,6 @@
 package com.gdb;
 
+import java.security.PrivilegedAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
@@ -53,12 +54,89 @@ public class Book {
         }
     }
 
-    public static void updateBook() {
 
+    public void updateBook(Book book) {
+        String quantityQuery = "SELECT quantity,author,title FROM book WHERE isbn = ?;";
+        PreparedStatement pPrevious;
+        ResultSet rQuantity;
+        int previousQuantity = 0;
+        String previousAuthor = "";
+        String previousTitle = "";
+        try {
+            pPrevious = DB_connection.Cnx().prepareStatement(quantityQuery);
+            pPrevious.setString(1, book.isbn);
+            rQuantity = pPrevious.executeQuery();
+            if (rQuantity.next()) {
+                previousQuantity = rQuantity.getInt(1);
+                previousAuthor = rQuantity.getString(2);
+                previousTitle = rQuantity.getString(3);
+            } else {
+                System.out.println("Book not found");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        String bookQuery = "UPDATE `book` SET `title`=?, `author`=?, `quantity`=? WHERE `isbn`=?";
+        String copiesQuery = "INSERT INTO `copies`(`status`, `isbn_book`) VALUES (?,?)";
+        PreparedStatement pBook;
+        PreparedStatement pCopy;
+
+        book.quantity = (book.quantity == 0) ? previousQuantity : book.quantity;
+        if (previousQuantity > book.quantity) {
+            System.out.println("Cannot enter a quantity less than the previous quantity");
+            return;
+        }
+
+        try {
+
+            pBook = DB_connection.Cnx().prepareStatement(bookQuery);
+            pCopy = DB_connection.Cnx().prepareStatement(copiesQuery);
+
+            String newTitle = (book.title.isEmpty()) ? previousTitle : book.title;
+            String newAuthor = (book.author.isEmpty()) ? previousAuthor : book.author;
+
+            pBook.setString(1, newTitle);
+            pBook.setString(2, newAuthor);
+            pBook.setInt(3, book.quantity);
+            pBook.setString(4, book.isbn);
+
+            if (pBook.executeUpdate() != 0) {
+
+                if (book.quantity > previousQuantity) {
+                    int additionalCopies = book.quantity - previousQuantity;
+                    pCopy.setString(1, "Available");
+                    pCopy.setString(2, book.isbn);
+
+                    for (int i = 0; i < additionalCopies; i++) {
+                        pCopy.execute();
+                    }
+                }
+
+
+                System.out.println("Book updated");
+            } else {
+                System.out.println("Book not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void removeBook() {
-
+    public void removeBook(String isbn) {
+        String query = "DELETE FROM book WHERE isbn = ?;";
+        PreparedStatement p;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            p.setString(1,isbn);
+            if (p.executeUpdate() != 0) {
+                System.out.println("Book deleted");
+            } else {
+                System.out.println("Book not found");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void searchBooks(String search) {

@@ -2,8 +2,6 @@ package com.gdb;
 
 import java.util.Scanner;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
 
@@ -12,24 +10,14 @@ public class Main {
         System.out.printf("Hello and welcome!\n");
         //addBook();
         //Book.displayBooks();
+        updateBook();
         //Book.displayAvailableBooks();
         //searchBooks();
+        //deleteBooks();
 
 
         //Copies.displayCopies();
 
-
-
-
-
-
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        /*for (int i = 1; i <= 5; i++) {
-
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }*/
     }
 
     public static void addBook() {
@@ -44,11 +32,49 @@ public class Main {
         book.addBook(book);
     }
 
+    public static void updateBook() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the ISBN of the book to edit: ");
+        String isbn = scanner.nextLine();
+        System.out.println("Enter the new title or just hit Enter if you want to keep the previous title: ");
+        String title = scanner.nextLine();
+        System.out.println("Enter the new author or just hit Enter if you want to keep the previous author: ");
+        String author = scanner.nextLine();
+        //System.out.println("Enter the new quantity or just just type 0 if you want to keep the previous quantity:  ");
+        //int quantity = scanner.nextInt();
+        int quantity = 0;
+        while (true) {
+            System.out.println("Enter the new quantity or just type 0 if you want to keep the previous quantity: ");
+            String quantityInput = scanner.nextLine();
+            if (quantityInput.isEmpty()) {
+                break; // No new quantity provided, break the loop
+            }
+            try {
+                quantity = Integer.parseInt(quantityInput);
+                break; // Valid integer input, break the loop
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid quantity. Please enter a valid number.");
+            }
+        }
+
+        // Create a Book object with the provided details
+        Book book = new Book(isbn, title, author, quantity);
+        book.updateBook(book);
+    }
+
     public static void searchBooks () {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Search for the book by the title or the author: ");
         String search = scanner.nextLine();
         Book book = new Book();
         book.searchBooks(search);
+    }
+
+    public static void deleteBooks () {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the isbn of the book you want to delete: ");
+        String isbn = scanner.nextLine();
+        Book book = new Book();
+        book.removeBook(isbn);
     }
 }
