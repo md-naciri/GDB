@@ -3,6 +3,7 @@ package com.gdb;
 import java.security.PrivilegedAction;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class Book {
@@ -144,17 +145,21 @@ public class Book {
         PreparedStatement p;
         ResultSet r;
         try {
+            boolean check = true;
             p = DB_connection.Cnx().prepareStatement(query);
             p.setString(1,search);
             p.setString(2,search);
             r = p.executeQuery();
             while (r.next()){
+                check = false;
                 System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4));
+            }
+            if (check){
+                System.out.println("Book not found");
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     public static void displayBook() {
@@ -195,11 +200,11 @@ public class Book {
                 "FROM book b JOIN copies c ON b.isbn = c.isbn_book\n" +
                 "GROUP BY b.isbn\n" +
                 "HAVING available > 0;";
-        PreparedStatement p;
+        Statement p;
         ResultSet r;
         try {
-            p = DB_connection.Cnx().prepareStatement(query);
-            r = p.executeQuery();
+            p = DB_connection.Cnx().createStatement();
+            r = p.executeQuery(query);
             while (r.next()){
                 System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4)+"    Av Qu: "+r.getInt(5));
             }

@@ -10,14 +10,14 @@ public class Main {
         System.out.printf("Hello and welcome!\n");
         //addBook();
         //Book.displayBooks();
-        updateBook();
+        //updateBook();
         //Book.displayAvailableBooks();
         //searchBooks();
         //deleteBooks();
-
-
-        //Copies.displayCopies();
-
+        //Copy.displayCopies();
+        //addBorrower();
+        borrowBook();
+        //searchBorrower();
     }
 
     public static void addBook() {
@@ -76,5 +76,35 @@ public class Main {
         String isbn = scanner.nextLine();
         Book book = new Book();
         book.removeBook(isbn);
+    }
+
+    public static void borrowBook(){
+        System.out.println("Borrow a book");
+        searchBooks();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the isbn of the book you want to borrow: ");
+        String isbn = scanner.nextLine();
+        Copy copy = new Copy();
+        copy.borrowBook(isbn);
+    }
+
+    public static void addBorrower(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name: ");
+        String name = scanner.nextLine();
+        System.out.println("Enter the phone number: ");
+        String phone = scanner.nextLine();
+        Borrower borrower = new Borrower(name, phone);
+        borrower.addBorrower();
+    }
+
+    public static void searchBorrower() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the name: ");
+        String name = scanner.nextLine();
+        System.out.println("Enter the phone number: ");
+        String phone = scanner.nextLine();
+        Borrower borrower = new Borrower(name, phone);
+        borrower.searchBorrower();
     }
 }

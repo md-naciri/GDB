@@ -4,17 +4,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-public class Copy extends Book {
+public class Copy {
     private static int copyId;
     private String status;
 
     private Book book;
 
-    public Copy(String isbn, String title, String author, int quantity, int copyId, String status, Book book){
-        super(isbn, title, author, quantity);
+    public Copy(int copyId, String status){
         this.status = status;
-        this.book = book;
         copyId++;
+    }
+    public Copy(){
     }
 
     public int getcopyId() {
@@ -50,7 +50,35 @@ public class Copy extends Book {
         }catch (Exception e){
             e.getMessage();
         }
+    }
+
+    public void borrowBook(String isbn){
+        String queryIsAvailable = "SELECT copyId FROM `copies` WHERE isbn_book = ? AND status = 'Available' LIMIT 1";
+        String queryBorrow = "UPDATE copies SET status='Borrowed' WHERE copyId = ?";
+        PreparedStatement pIsAvailable;
+        PreparedStatement pBorrow;
+        ResultSet rIsAvailable;
+        try {
+            pIsAvailable = DB_connection.Cnx().prepareStatement(queryIsAvailable);
+            pIsAvailable.setString(1,isbn);
+            rIsAvailable = pIsAvailable.executeQuery();
+            if(rIsAvailable.next()){
+                int copyId = rIsAvailable.getInt(1);
 
 
+
+
+                pBorrow = DB_connection.Cnx().prepareStatement(queryBorrow);
+                //pBorrow.setInt(1,copyId);
+                //pBorrow.executeUpdate();
+
+
+            }else {
+                System.out.println("There is no copy available of this book");
+                return;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
