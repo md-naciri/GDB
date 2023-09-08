@@ -15,7 +15,27 @@ FOR EACH ROW
 BEGIN
 	IF new.author = "" or new.author IS NULL THEN SET new.author = "The writer is unknown";
 	END IF; 
-END //
+END; //
+
+DELIMITER //
+CREATE TRIGGER change_status_to_borrowed 
+AFTER INSERT ON borrowing 
+FOR EACH ROW 
+BEGIN
+    UPDATE copies
+    SET status = 'Borrowed'
+    WHERE copyId = NEW.copies_copyId;
+END; //
+
+DELIMITER //
+CREATE TRIGGER change_status_to_available 
+AFTER DELETE ON borrowing 
+FOR EACH ROW 
+BEGIN
+    UPDATE copies
+    SET status = 'Available'
+    WHERE copyId = OLD.copies_copyId;
+END; //
 
 CREATE TABLE `borrower` (
   `memberId` int NOT NULL AUTO_INCREMENT PRIMARY KEY,

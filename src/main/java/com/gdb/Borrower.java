@@ -28,15 +28,26 @@ public class Borrower {
     }
 
     public void addBorrower(){
-        String query = "INSERT INTO borrower(name, phone) VALUES (?,?)";
-        PreparedStatement p;
+        String querySetBorrower = "INSERT INTO borrower(name, phone) VALUES (?,?)";
+        PreparedStatement pSet;
+        String queryGetBorrower = "SELECT * FROM borrower WHERE name = ? AND phone = ? ;";
+        PreparedStatement pGet;
+        ResultSet r;
         if(!checkBorrower()){
             try {
-                p = DB_connection.Cnx().prepareStatement(query);
-                p.setString(1, name);
-                p.setString(2, phone);
-                p.execute();
-                System.out.println("Borrower added successfully");
+                pSet = DB_connection.Cnx().prepareStatement(querySetBorrower);
+                pSet.setString(1, name);
+                pSet.setString(2, phone);
+                if (pSet.executeUpdate()!=0){
+                    System.out.println("Borrower added successfully");
+                    pGet = DB_connection.Cnx().prepareStatement(queryGetBorrower);
+                    pGet.setString(1, name);
+                    pGet.setString(2, phone);
+                    r = pGet.executeQuery();
+                    if (r.next()){
+                        System.out.println("memberId: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
+                    }
+                }
             }catch(Exception e){
                 e.printStackTrace();
             }

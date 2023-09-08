@@ -16,8 +16,13 @@ public class Main {
         //deleteBooks();
         //Copy.displayCopies();
         //addBorrower();
-        borrowBook();
+        //borrowBook();
         //searchBorrower();
+        //returnBook();
+
+        Borrowing borrowing = new Borrowing();
+        borrowing.scheduleStatusUpdate();
+
     }
 
     public static void addBook() {
@@ -79,20 +84,34 @@ public class Main {
     }
 
     public static void borrowBook(){
-        System.out.println("Borrow a book");
-        searchBooks();
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Borrow a book");
+        addBorrower();
+        searchBooks();
         System.out.println("Enter the isbn of the book you want to borrow: ");
         String isbn = scanner.nextLine();
+        System.out.println("Enter the MemberId of the borrower: ");
+        int memberId = scanner.nextInt();
         Copy copy = new Copy();
-        copy.borrowBook(isbn);
+        copy.borrowBook(isbn, memberId);
+    }
+
+    public static void returnBook(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Return a book");
+        System.out.println("Enter the copyId of the book you want to return: ");
+        int copyId = scanner.nextInt();
+        System.out.println("Enter the MemberId of the borrower: ");
+        int memberId = scanner.nextInt();
+        Copy copy = new Copy();
+        copy.returnBook(copyId, memberId);
     }
 
     public static void addBorrower(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the name: ");
+        System.out.println("Enter the borrower name: ");
         String name = scanner.nextLine();
-        System.out.println("Enter the phone number: ");
+        System.out.println("Enter the borrower phone number: ");
         String phone = scanner.nextLine();
         Borrower borrower = new Borrower(name, phone);
         borrower.addBorrower();
@@ -107,4 +126,7 @@ public class Main {
         Borrower borrower = new Borrower(name, phone);
         borrower.searchBorrower();
     }
+
+
+
 }
