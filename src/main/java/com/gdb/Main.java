@@ -5,9 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!\n");
+        //System.out.printf("Hello and welcome!\n");
         //addBook();
         //Book.displayBooks();
         //updateBook();
@@ -19,9 +17,72 @@ public class Main {
         //borrowBook();
         //searchBorrower();
         //returnBook();
+        Borrowing.checkReturnDate();
 
-        Borrowing borrowing = new Borrowing();
-        borrowing.scheduleStatusUpdate();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to the Library!");
+
+        while (true) {
+            System.out.println("\nPlease choose an option:");
+            System.out.println("1.  Display all books");
+            System.out.println("2.  Display available books");
+            System.out.println("3.  Display all copies of a book");
+            System.out.println("4.  Add a new book");
+            System.out.println("5.  Update book information");
+            System.out.println("6.  Delete books");
+            System.out.println("7.  Search for books");
+            System.out.println("8.  Add a new borrower");
+            System.out.println("9.  Search for a borrower");
+            System.out.println("10. Borrow a book");
+            System.out.println("11. Return a book");
+            System.out.println("0.  Exit");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    Book.displayBooks();
+                    break;
+                case 2:
+                    Book.displayAvailableBooks();
+                    break;
+                case 3:
+                    Copy.displayCopies();
+                    break;
+                case 4:
+                    addBook();
+                    break;
+                case 5:
+                    updateBook();
+                    break;
+                case 6:
+                    deleteBooks();
+                    break;
+                case 7:
+                    searchBooks();
+                    break;
+                case 8:
+                    addBorrower();
+                    break;
+                case 9:
+                    searchBorrower();
+                    break;
+                case 10:
+                    borrowBook();
+                    break;
+                case 11:
+                    returnBook();
+                    break;
+                case 0:
+                    System.out.println("Goodbye! Have a great day!");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
 
     }
 

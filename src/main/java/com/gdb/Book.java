@@ -141,7 +141,10 @@ public class Book {
     }
 
     public void searchBooks(String search) {
-        String query = "SELECT * FROM `book` WHERE title = ? OR author = ? ;";
+        String query = "SELECT b.isbn, b.title, b.author, b.quantity, SUM(CASE WHEN c.status = 'Available' THEN 1 ELSE 0 END) AS available\n" +
+                "FROM book b JOIN copies c ON b.isbn = c.isbn_book\n" +
+                "WHERE b.title = ? OR b.author = ?\n" +
+                "GROUP BY b.isbn";
         PreparedStatement p;
         ResultSet r;
         try {
@@ -152,7 +155,7 @@ public class Book {
             r = p.executeQuery();
             while (r.next()){
                 check = false;
-                System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4));
+                System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4)+"    AV QUANTITY: "+r.getInt(5));
             }
             if (check){
                 System.out.println("Book not found");

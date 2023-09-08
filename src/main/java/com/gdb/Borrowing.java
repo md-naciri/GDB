@@ -25,7 +25,7 @@ public class Borrowing {
     public Borrowing(){
     }
 
-    public void checkReturnDate(){
+    public static void checkReturnDate(){
         LocalDate currentDate = LocalDate.now();
         String queryCheck = "SELECT copies_copyId FROM borrowing WHERE returnDate < ?";
         String queryUpdate = "UPDATE copies SET status = 'Lost' WHERE copyId = ?;";
@@ -47,7 +47,7 @@ public class Borrowing {
         }
     }
 
-    public void scheduleStatusUpdate(){
+    /*public void scheduleStatusUpdate(){
         Timer timer = new Timer(true);
 
         long delay = 0; // Start immediately
@@ -60,5 +60,5 @@ public class Borrowing {
                 System.out.println("message");
             }
         }, delay, period);
-    }
+    }*/
 }
