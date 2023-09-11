@@ -10,6 +10,7 @@ public class Borrower {
     private String name;
     private String phone;
 
+
     public Borrower( String name, String phone) {
         memberId++;
         this.name = name;
@@ -27,7 +28,7 @@ public class Borrower {
         return memberId;
     }
 
-    public void addBorrower(){
+    public int addBorrower(){
         String querySetBorrower = "INSERT INTO borrower(name, phone) VALUES (?,?)";
         PreparedStatement pSet;
         String queryGetBorrower = "SELECT * FROM borrower WHERE name = ? AND phone = ? ;";
@@ -39,34 +40,36 @@ public class Borrower {
                 pSet.setString(1, name);
                 pSet.setString(2, phone);
                 if (pSet.executeUpdate()!=0){
-                    System.out.println("Borrower added successfully");
+                    System.out.println("\nBorrower added successfully: ");
                     pGet = DB_connection.Cnx().prepareStatement(queryGetBorrower);
                     pGet.setString(1, name);
                     pGet.setString(2, phone);
                     r = pGet.executeQuery();
                     if (r.next()){
-                        System.out.println("memberId: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
+                        memberId = r.getInt(1);
+                        System.out.println("Membership code: "+r.getInt(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
                     }
                 }
             }catch(Exception e){
                 e.printStackTrace();
             }
         }
+        return memberId;
     }
 
     public void searchBorrower(){
-        String query = "SELECT * FROM borrower WHERE name = ? AND phone = ? ;";
+        String query = "SELECT * FROM borrower WHERE name LIKE ? AND phone LIKE ? ;";
         PreparedStatement p;
         ResultSet r;
         try {
             boolean check = true;
             p = DB_connection.Cnx().prepareStatement(query);
-            p.setString(1,name);
-            p.setString(2,phone);
+            p.setString(1,"%"+name+"%");
+            p.setString(2,"%"+phone+"%");
             r = p.executeQuery();
             if (r.next()){
                 check = false;
-                System.out.println("memberId: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
+                System.out.println("Membership code: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
             }
             if (check){
                 System.out.println("Borrower not found");
@@ -80,14 +83,16 @@ public class Borrower {
         String query = "SELECT * FROM borrower WHERE name = ? AND phone = ? ;";
         PreparedStatement p;
         ResultSet r;
+        //int member_id = 0;
         try {
             p = DB_connection.Cnx().prepareStatement(query);
             p.setString(1,name);
             p.setString(2,phone);
             r = p.executeQuery();
             if (r.next()){
-                System.out.println("Borrower already exists");
-                System.out.println("memberId: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
+                memberId = r.getInt(1);
+                System.out.println("\nBorrower already exists: ");
+                System.out.println("Membership code: "+r.getString(1)+"    Name: "+r.getString(2)+"    Phone: "+r.getString(3));
                 return true;
             }else{
                 return false;

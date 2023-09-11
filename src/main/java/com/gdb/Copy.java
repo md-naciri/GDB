@@ -40,6 +40,13 @@ public class Copy {
         Scanner s = new Scanner(System.in);
         System.out.println("insert the isbn: ");
         String i_isbn = s.nextLine();
+        while (!Book.checkIsbn(i_isbn)){
+            System.out.println("The isbn is incorrect, enter a valid one or type E to exit: ");
+            i_isbn = s.nextLine();
+            if (i_isbn.equals("E")){
+                return;
+            }
+        };
         String query = "SELECT c.*, b.* FROM copies c INNER JOIN book b ON c.isbn_book = b.isbn WHERE c.isbn_book = ?";
         try {
             p = DB_connection.Cnx().prepareStatement(query);
@@ -98,11 +105,34 @@ public class Copy {
             p.setInt(1, copyId);
             p.setInt(2, memberId);
             if (p.executeUpdate() != 0){
-                System.out.println("Successfully deleted the row from the 'borrowing' table.");
+                System.out.println("Book returned successfully");
             } else {
-                System.out.println("copyId or memberId is incorrect");
+                System.out.println("copyId incorrect");
             }
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void statistics() {
+        String query = "SELECT\n" +
+                "  SUM(CASE WHEN status = 'Available' THEN 1 ELSE 0 END) AS available,\n" +
+                "  SUM(CASE WHEN status = 'Borrowed' THEN 1 ELSE 0 END) AS borrowed,\n" +
+                "  SUM(CASE WHEN status = 'Lost' THEN 1 ELSE 0 END) AS lost,\n" +
+                "  COUNT(*) AS total\n" +
+                "FROM copies;";
+        PreparedStatement p;
+        ResultSet r;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            r = p.executeQuery();
+            while (r.next()){
+                System.out.println("All books: " + r.getInt(4) +
+                        "\nAvailable books: " + r.getInt(1) +
+                        "\nBorrowed books: " + r.getInt(2) +
+                        "\nLost books: " + r.getInt(3));
+            }
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

@@ -1,6 +1,7 @@
 package com.gdb;
 
 import java.security.PrivilegedAction;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -41,7 +42,6 @@ public class Book {
             if (bookStatement.executeUpdate() != 0) {
                 copiesStatement.setString(1, "Available");
                 copiesStatement.setString(2, book.isbn);
-
                 for (int i = 0; i < book.quantity; i++) {
                     copiesStatement.execute();
                 }
@@ -136,22 +136,23 @@ public class Book {
                 System.out.println("Book not found");
             }
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("You cannot delete a borrowed book!");
         }
     }
 
     public void searchBooks(String search) {
         String query = "SELECT b.isbn, b.title, b.author, b.quantity, SUM(CASE WHEN c.status = 'Available' THEN 1 ELSE 0 END) AS available\n" +
                 "FROM book b JOIN copies c ON b.isbn = c.isbn_book\n" +
-                "WHERE b.title = ? OR b.author = ?\n" +
+                "WHERE b.title LIKE ? OR b.author LIKE ?\n" +
                 "GROUP BY b.isbn";
         PreparedStatement p;
         ResultSet r;
         try {
+
             boolean check = true;
             p = DB_connection.Cnx().prepareStatement(query);
-            p.setString(1,search);
-            p.setString(2,search);
+            p.setString(1,"%"+search+"%");
+            p.setString(2,"%"+search+"%");
             r = p.executeQuery();
             while (r.next()){
                 check = false;
@@ -185,6 +186,7 @@ public class Book {
         try {
             p = DB_connection.Cnx().prepareStatement(query);
             r = p.executeQuery();
+            System.out.println("All the books in the library: \n");
             while (r.next()){
                 System.out.println("ISBN: "+r.getString(1)+"    TITLE: "+r.getString(2)+"    AUTHOR: "+r.getString(3)+"    QUANTITY: "+r.getInt(4)+"    Av Qu: "+r.getInt(5)+"    Br Qu: "+r.getInt(6)+"    Ls Qu: "+r.getInt(7));
             }
@@ -214,6 +216,23 @@ public class Book {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    public static boolean checkIsbn(String isbn)
+    {
+        PreparedStatement p;
+        ResultSet r;
+        String querySearch = "SELECT isbn FROM book  where isbn = ?";
+        try{
+             p = DB_connection.Cnx().prepareStatement(querySearch);
+             p.setString(1,isbn);
+             r = p.executeQuery();
+             if(r.next()){
+                 return true;
+             }
+        }catch(Exception e){
+               e.getMessage();
+        }
+        return false;
     }
 
 

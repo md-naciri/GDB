@@ -61,4 +61,23 @@ public class Borrowing {
             }
         }, delay, period);
     }*/
+
+    public static boolean checkMembership(int memberId){
+        String query = "SELECT borrower_memberId FROM borrowing WHERE borrower_memberId = ? ;";
+        PreparedStatement p;
+        ResultSet r;
+        try {
+            p = DB_connection.Cnx().prepareStatement(query);
+            p.setInt(1, memberId);
+            r = p.executeQuery();
+            if (r.next()){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
